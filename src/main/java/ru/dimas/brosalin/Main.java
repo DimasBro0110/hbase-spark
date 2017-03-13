@@ -7,6 +7,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.hbase.*;
 import org.apache.hadoop.hbase.client.*;
 import org.apache.hadoop.hbase.util.Bytes;
+import ru.dimas.brosalin.babyHazel.BabyHazelCollaborator;
 import ru.dimas.brosalin.hbaseCollaborator.HbaseCollaboratorWithCrawledTable;
 import java.io.IOException;
 import java.util.*;
@@ -22,22 +23,9 @@ public class Main {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
-//        Configuration conf = HBaseConfiguration.create();
-//        conf.set("hbase.zookeeper.quorum", "tele2-cdh-nn");
-//        conf.set("hbase.zookeeper.property.clientPort", "2181");
-//
-//        HbaseCollaboratorWithCrawledTable collaboratorHBase =
-//                new HbaseCollaboratorWithCrawledTable(conf, "dimas_test");
-//
-//        Map<String, ArrayList<String>> configMap = new HashMap<>();
-//        configMap.put("personal", new ArrayList<String>());
-//        configMap.get("personal").add("name");
-//        configMap.get("personal").add("city");
-//
-//        Map<String, ArrayList<String>> fetchedDataHBase =
-//                collaboratorHBase.fetchDataFromHBaseTable(configMap, 30, 30);
-//
-//        System.out.println(fetchedDataHBase);
+        Configuration conf = HBaseConfiguration.create();
+        conf.set("hbase.zookeeper.quorum", "tele2-cdh-nn");
+        conf.set("hbase.zookeeper.property.clientPort", "2181");
 
         ClientConfig clientConfig = new ClientConfig();
         clientConfig
@@ -47,10 +35,15 @@ public class Main {
                 .addAddress("192.168.6.24")
                 .addAddress("192.168.6.25");
 
-        HazelcastInstance hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
-        BlockingQueue<String> queue = hazelcastClient.getQueue("test_dimas");
-        queue.put("test");
-        System.out.println("message sent");
+        HbaseCollaboratorWithCrawledTable collaboratorHBase =
+                new HbaseCollaboratorWithCrawledTable(conf, "DimasTest", clientConfig, "hbase_map");
+
+        Map<String, ArrayList<String>> configMap = new HashMap<>();
+        configMap.put("FamilyName", new ArrayList<String>());
+        configMap.get("FamilyName").add("url");
+
+        collaboratorHBase.fedHazel(50, 50, configMap);
+
 
     }
 
