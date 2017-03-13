@@ -42,10 +42,7 @@ public class Main {
         ClientConfig clientConfig = new ClientConfig();
         clientConfig
                 .getNetworkConfig()
-                .addAddress("192.168.6.20")
-                .addAddress("192.168.6.23")
-                .addAddress("192.168.6.24")
-                .addAddress("192.168.6.25");
+                .addAddress("");
 
         HazelcastInstance hazelcastClient = HazelcastClient.newHazelcastClient(clientConfig);
         BlockingQueue<String> queue = hazelcastClient.getQueue("test_dimas");
