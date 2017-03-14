@@ -49,8 +49,6 @@ public class HbaseCollaboratorWithCrawledTable implements Serializable {
                         Bytes.toBytes(entryMapSet.getKey()),
                         Bytes.toBytes(valueColumn)
                 );
-                System.out.println(entryMapSet.getKey());
-                System.out.println(valueColumn);
             }
         }
         if(table != null) {
@@ -62,9 +60,9 @@ public class HbaseCollaboratorWithCrawledTable implements Serializable {
                     String columnValue = new String(CellUtil.cloneValue(cell));
                     batchToHazel.put(columnValue.hashCode(), columnValue);
                 }
+                hazelCollaborator.sendToMap(batchToHazel);
+                logger.log(Level.INFO, "batch sent!");
             }
-            hazelCollaborator.sendToMap(batchToHazel);
-            logger.log(Level.INFO, "batch sent!");
         }
     }
 
@@ -85,36 +83,4 @@ public class HbaseCollaboratorWithCrawledTable implements Serializable {
             return null;
         }
     }
-
-//    public Map<String, ArrayList<String>> fetchDataFromHBaseTable(
-//            Map<String, ArrayList<String>> familyAndNameColumns,
-//            int cacheSize,
-//            int batchSize) throws IOException {
-//        Map<String, ArrayList<String>> resultFromHbase = initializeMapToHazel(familyAndNameColumns);
-//        Scan scan = new Scan().setCaching(cacheSize).setBatch(batchSize);
-//        for (Map.Entry<String, ArrayList<String>> entryMapSet : familyAndNameColumns.entrySet()) {
-//            for (String valueColumn : entryMapSet.getValue()) {
-//                scan.addColumn(
-//                        Bytes.toBytes(entryMapSet.getKey()),
-//                        Bytes.toBytes(valueColumn)
-//                );
-//                System.out.println(entryMapSet.getKey());
-//                System.out.println(valueColumn);
-//            }
-//        }
-//        if(table != null) {
-//            ResultScanner resultScanner = table.getScanner(scan);
-//            for (Result result : resultScanner) {
-//                for (Cell cell : result.rawCells()) {
-//                    String columnName = new String(CellUtil.cloneQualifier(cell));
-//                    String columnValue = new String(CellUtil.cloneValue(cell));
-//                    assert resultFromHbase != null;
-//                    resultFromHbase.get(columnName).add(columnValue);
-//                }
-//            }
-//            return resultFromHbase;
-//        }else {
-//            return null;
-//        }
-//    }
 }
